@@ -219,3 +219,20 @@ sudo grep -i "warning" /var/log/syslog
 #### 2.3.2 If syslog is not present, use journalctl or the appropriate distribution-specific log source.
 
 ![Activity 2.3.2](./Activity%202.3.2..png)
+
+### Event Review Summary
+
+| Event/Condition | Evidence Source | Time | User/Service | Security Significance | Recommended Action |
+|----------------|----------------|------|--------------|----------------------|-------------------|
+| No journal entries available | `journalctl` | Not Available | systemd-journald | Security and operational events could not be reviewed through the system journal. | Verify that the systemd journal service is configured and generating logs; retest log collection. |
+| Authentication log unavailable | `/var/log/auth.log` | Not Available | Authentication Services | Authentication failures and sudo activity could not be reviewed from the expected source. | Configure and verify authentication logging; confirm that authentication events are being recorded. |
+| No significant authentication events confirmed | Authentication log review | Not Available | Not Available | Lack of evidence should be treated as a logging limitation rather than proof that no activity occurred. | Restore logging capability and perform follow-up monitoring. |
+| `/var/log/syslog` not present | `/var/log/syslog` | Not Available | System Logging Service | General system events, warnings, and errors could not be reviewed using the standard log source. | Enable or restore an approved system logging mechanism and verify log retention. |
+| Package-management and update-alternatives warnings observed | Recursive review of `/var/log` contents | Available in log output | Package Management Services | Observed entries were operational in nature and did not indicate a confirmed security incident. | Continue routine monitoring and investigate recurring operational warnings if they persist. |
+| Logging and monitoring control-assurance gap | Combined log review results | Ongoing | Multiple Services | Security-relevant activity cannot be reliably monitored, attributed, or reconstructed following an incident. | Implement and verify approved logging controls, validate evidence collection, and retest monitoring capabilities. |
+
+### Summary
+
+The recent system-log review was attempted using `journalctl`; however, the assigned laboratory environment did not contain usable journal files, and no recent entries were available for review. This indicates that the systemd journal was either not operating or not populated in the environment. The standard authentication log, `/var/log/auth.log`, was also unavailable, which meant that authentication failures and privilege-use activity such as `sudo` events could not be reviewed through the expected source. As a result, no significant authentication event could be confirmed from the available evidence. This should be treated as a logging limitation rather than proof that no authentication or privileged activity occurred.
+
+The standard `/var/log/syslog` file was also absent. Attempts to review it using `sudo less /var
