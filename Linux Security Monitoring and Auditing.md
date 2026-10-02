@@ -191,7 +191,7 @@ The absence of journal records creates a monitoring and assurance gap because sy
 sudo journalctl -f
 ```
 
-![Activity 2.1.2](./Activity%202.1.2.png)
+[Activity 2.1.2](./Activity%202.1.2.png)
 
 ### Activity 2.2 Authentication and Privilege-Use Analysis
 
