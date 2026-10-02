@@ -68,3 +68,43 @@ sudo nano /etc/audit/rules.d/custom.rules
 The custom rules file is used to define organisation-specific audit requirements, such as monitoring sensitive files, tracking privileged commands, and recording authentication-related events. Storing
 
 ![Activity 1.2.1](./Activity%201.2.1.png)
+
+### 1.2.2 Add Rules to Monitor Sensitive Account Files
+
+To monitor changes to critical account and authentication files, audit rules were added to the custom audit configuration file. These files contain user account information and password-related data that are essential to system security.
+
+The following audit rules were configured:
+
+```bash
+-w /etc/passwd -p rwxa -k passwd_changes
+-w /etc/shadow -p rwxa -k shadow_changes
+```
+
+### Purpose of the Rules
+
+- `-w` specifies the file or directory to watch.
+- `-p rwxa` monitors all relevant operations:
+  - `r` = read
+  - `w` = write
+  - `x` = execute
+  - `a` = attribute changes
+
+![Activity 1.2.2](./Activity%201.2.2.png)
+
+### 1.2.3 Add Program-Execution Monitoring Rules
+
+```bash
+-a always,exit -F arch=b64 -S execve -k program_execution
+-a always,exit -F arch=b32 -S execve -k program_execution
+```
+![Activity 1.2.3](./Activity%201.2.3.png)
+
+### 1.2.3 Add Program-Execution Monitoring Rules
+
+```bash
+-a always,exit -F arch=b64 -S execve -k program_execution
+-a always,exit -F arch=b32 -S execve -k program_execution
+```
+
+![Activity 1.2.4](./Activity%201.2.4.png)
+![Activity 1.2.4](./Activity%201.2.4..png)
