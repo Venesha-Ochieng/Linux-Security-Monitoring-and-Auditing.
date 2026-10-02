@@ -32,6 +32,7 @@ Audit records can be used to support forensic investigations, compliance require
 ## Activity 1.1: Verify or Install auditd
 
 The first task involved verifying whether the audit daemon (**auditd**) was installed and actively running on the assigned Linux system.
+<img width="1301" height="404" alt="image" src="https://github.com/user-attachments/assets/253d50a3-021a-4fa0-a88c-98132f973358" />
 
 ### Verification Command
 
