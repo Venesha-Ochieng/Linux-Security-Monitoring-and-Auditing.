@@ -31,8 +31,7 @@ Audit records can be used to support forensic investigations, compliance require
 
 ## Activity 1.1: Verify or Install auditd
 
-The first task involved verifying whether the audit daemon (**auditd**) was installed and actively running on the assigned Linux system.
-<img width="1301" height="404" alt="image" src="https://github.com/user-attachments/assets/253d50a3-021a-4fa0-a88c-98132f973358" />
+The first task involved verifying whether the audit daemon (**auditd**) was installed and actively running on the assigned Linux system
 
 ### Verification Command
 
@@ -51,3 +50,21 @@ sudo systemctl start auditd
 sudo systemctl enable auditd
 ```
 ![Activity 1.1](<Activity 1.1..png>)
+
+## Activity 1.2: Configure Audit Rules
+
+### 1.2.1 Create a Dedicated Audit Rules File
+
+To maintain good configuration management practices, a separate custom audit rules file was created instead of modifying the primary audit configuration directly. This approach simplifies administration, reduces the risk of accidental changes to default settings, and makes future maintenance easier.
+
+The following command was used to create and edit a custom rules file:
+
+```bash
+sudo nano /etc/audit/rules.d/custom.rules
+```
+
+### Purpose
+
+The custom rules file is used to define organisation-specific audit requirements, such as monitoring sensitive files, tracking privileged commands, and recording authentication-related events. Storing
+
+![Activity 1.2.1](./Activity%201.2.1.png)
