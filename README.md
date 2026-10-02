@@ -37,3 +37,13 @@ The first task involved verifying whether the audit daemon (**auditd**) was inst
 
 ```bash
 sudo systemctl status auditd
+### Installation of auditd (If Not Already Installed)
+
+If the Linux Audit Daemon (**auditd**) is not installed on the assigned virtual machine, it must be installed and configured to start automatically during system boot. The following commands were used:
+
+```bash
+sudo apt update
+sudo apt install auditd audispd-plugins
+sudo systemctl start auditd
+sudo systemctl enable auditd
+
