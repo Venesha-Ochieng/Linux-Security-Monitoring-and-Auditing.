@@ -108,3 +108,114 @@ The following audit rules were configured:
 
 ![Activity 1.2.4](./Activity%201.2.4.png)
 ![Activity 1.2.4](./Activity%201.2.4..png)
+
+### 1.2.5 Save the File, Then Load or Restart the Audit Service as Supported by Your VM
+
+```bash
+sudo systemctl restart auditd
+sudo auditctl -l
+```
+![Activity 1.2.5](./Activity%201.2.5.png)
+
+### Activity 1.3 Generate and Query Audit Events
+
+#### 1.3.1 Generate Only Benign Events Inside Your Assigned VM. Do Not Save Changes to Sensitive Account Files.
+
+```bash
+sudo nano /etc/passwd
+# Exit without saving.
+
+ls /tmp
+```
+
+![Activity 1.3.1](./Activity%201.3.1.png)
+
+#### 1.3.2 Optionally Generate a Failed Local Authentication Attempt in the Assigned VM Using an Instructor-Approved Method. Do Not Attempt Authentication Against External Hosts or Accounts.
+
+Query audit events by key:
+
+```bash
+sudo ausearch -k passwd_changes
+sudo ausearch -k program_execution
+sudo ausearch -k auth_failures
+```
+
+![Activity 1.3.2](./Activity%201.3.2.png)
+
+#### 1.3.3 Audit Files Did Not Exist
+![Activity 1.3.3](./Activity%201.3.3.png)
+
+#### 1.3.4 Generate Summary Reports
+
+```bash
+sudo aureport
+sudo aureport --failed
+sudo aureport --login
+```
+![Activity 1.3.4](./Activity%201.3.4.png)
+
+A short interpretation explaining what the observed audit record says about user/action/time and why the event could matter to security governance.
+No audit record containing user, action or timestamp information could be retrieved because the audit subsystem did not generate /var/log/audit/audit.log. Therefore, the benign activity performed, including opening /etc/passwd, could not be linked to a specific audit event. From a security-governance perspective, this represents a control-assurance gap because activities involving sensitive files, privileged commands or authentication events cannot be reliably traced to a user and time. The absence of an audit record should therefore be treated as a monitoring weakness, not as evidence that no security-relevant activity occurred.
+
+## Module 2: Log Management and Analysis
+
+Linux systems generate authentication, service, kernel, and application evidence through systemd journals and traditional log files. You will use `journalctl` and `grep` to identify security-relevant events and distinguish routine activity from conditions that warrant further investigation.
+
+### Activity 2.1 Explore Logs with journalctl
+
+```bash
+sudo journalctl
+sudo journalctl -u ssh
+sudo journalctl --since "today"
+sudo journalctl -p err
+```
+![Activity 2.1](./ACTIVITY%202.1.png)
+
+#### Activity 2.1.1 Observation and Analysis
+
+The system journal was queried using `journalctl`, including SSH-specific events, events generated today, and error-priority events. All queries returned **"No journal files were found"** and **"No entries"**, indicating that persistent or runtime systemd journal data was unavailable in the assigned lab environment.
+
+Therefore, journal-based log analysis could not be completed and was documented as an environment limitation.
+
+**Observation:**
+No systemd journal data was available for review. As a result, authentication events, service activity, system events, and error messages could not be analysed through `journalctl`.
+
+**Governance Impact:**
+The absence of journal records creates a monitoring and assurance gap because system activity cannot be reviewed, correlated, or investigated using standard logging mechanisms. This limits the organisation's ability to detect operational issues, investigate security incidents, and demonstrate the effectiveness of monitoring controls.
+
+---
+
+### 2.1.2 To Observe Live Events
+
+```bash
+sudo journalctl -f
+```
+
+![Activity 2.1.2](./Activity%202.1.2.png)
+
+### Activity 2.2 Authentication and Privilege-Use Analysis
+
+On Ubuntu/Debian systems that use `/var/log/auth.log`:
+
+```bash
+sudo less /var/log/auth.log
+sudo grep -i "failed password" /var/log/auth.log
+sudo grep -i "sudo" /var/log/auth.log
+```
+
+![Activity 2.2](./Activity%202.2.png)
+
+### Activity 2.3 General System Log Review
+
+#### 2.3.1 Where `/var/log/syslog` Exists
+
+```bash
+sudo less /var/log/syslog
+sudo grep -i "error" /var/log/syslog
+sudo grep -i "warning" /var/log/syslog
+```
+![Activity 2.3.1](./Activity%202.3.1.png)
+
+#### 2.3.2 If syslog is not present, use journalctl or the appropriate distribution-specific log source.
+
+![Activity 2.3.2](./Activity%202.3.2..png)
