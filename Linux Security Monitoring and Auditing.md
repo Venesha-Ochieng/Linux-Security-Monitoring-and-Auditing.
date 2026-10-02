@@ -47,4 +47,4 @@ sudo apt install auditd audispd-plugins
 sudo systemctl start auditd
 sudo systemctl enable auditd
 
-![Activity 1.1](Activity%201.1.png)
+![Activity 1.1](./Activity%201.1..png)
