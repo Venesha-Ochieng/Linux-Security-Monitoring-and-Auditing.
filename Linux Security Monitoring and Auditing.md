@@ -47,4 +47,4 @@ sudo apt install auditd audispd-plugins
 sudo systemctl start auditd
 sudo systemctl enable auditd
 
-![Activity 1.1](https://raw.githubusercontent.com/Venesha-Ochieng/Linux-Security-Monitoring-and-Auditing/main/Activity%201.1..png)
+![Activity 1.1](<Activity 1.1..png>)
