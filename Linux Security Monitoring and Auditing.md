@@ -277,7 +277,7 @@ Once Lynis is installed, capture:
 ![Activity 3.1.1](./Activity%203.1.1.png)
 
 ### 3.1.1 Then:
-![Activity 3.1.1](./Activity%203.1.1..png)
+![3.1.1](./%203.1.1..png)
 
 ### 3.1.2 Hardening index or equivalent summary
 ![Activity 3.1.2](./Activity%203.1.2.png)
