@@ -273,11 +273,10 @@ Do not make a change merely to increase a score. Explain the control objective, 
 ### 3.1.1 Lynis Version and Audit Execution Evidence
 
 Once Lynis is installed, capture:
-
-![Activity 3.1.1](./Activity%203.1.1.png)
+![Activity 3.1.1](./3.1.1.png)
 
 ### 3.1.1 Then:
-![3.1.1](./%203.1.1..png)
+![Activity 3.1.1](./Activity%203.1.1.png)
 
 ### 3.1.2 Hardening index or equivalent summary
 ![Activity 3.1.2](./Activity%203.1.2.png)
