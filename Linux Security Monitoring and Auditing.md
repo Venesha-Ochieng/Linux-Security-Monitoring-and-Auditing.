@@ -236,3 +236,130 @@ sudo grep -i "warning" /var/log/syslog
 The recent system-log review was attempted using `journalctl`; however, the assigned laboratory environment did not contain usable journal files, and no recent entries were available for review. This indicates that the systemd journal was either not operating or not populated in the environment. The standard authentication log, `/var/log/auth.log`, was also unavailable, which meant that authentication failures and privilege-use activity such as `sudo` events could not be reviewed through the expected source. As a result, no significant authentication event could be confirmed from the available evidence. This should be treated as a logging limitation rather than proof that no authentication or privileged activity occurred.
 
 The standard `/var/log/syslog` file was also absent. Attempts to review it using `sudo less /var
+
+## Module 3 Linux Security Assessment with Lynis
+
+Lynis is an open-source auditing tool for Unix-like systems. It performs configuration and security checks and reports warnings, suggestions and a hardening index. It is an audit and assessment tool rather than an active penetration-testing tool.
+
+### Activity 3.1 Install or Access Lynis
+
+Use the package or installation method approved for your assigned lab VM. If Lynis is already installed, document its version and proceed. If not, obtain the current stable release using the instructor-approved repository or the official Lynis/CISOfy distribution source.
+
+If your instructor specifically directs use of the source archive workflow, use a dedicated directory such as `/opt/lynis` and verify the downloaded version before extraction.
+
+### Activity 3.2 Run a System Audit
+
+From the installed Lynis location, run the system audit using the appropriate command for your installation. Common package installations support:
+
+```bash
+sudo lynis audit system
+```
+![Activity 3.2](./Activity%203.2.png)
+
+From source-directory installations, use:
+
+```bash
+sudo ./lynis audit system
+```
+
+### Activity 3.3 Optional Safe Hardening and Retest
+
+Choose one low-risk Lynis recommendation that you understand and that is permitted in your assigned VM. Record the current state, implement the approved improvement, and re-run the relevant check or Lynis audit.
+
+Do not make a change merely to increase a score. Explain the control objective, operational impact and how you verified the change.
+
+## Required Evidence Module 3
+
+### 3.1.1 Lynis Version and Audit Execution Evidence
+
+Once Lynis is installed, capture:
+
+![Activity 3.1.1](./Activity%203.1.1.png)
+
+### 3.1.1 Then:
+![Activity 3.1.1](./Activity%203.1.1..png)
+
+### 3.1.2 Hardening index or equivalent summary
+![Activity 3.1.2](./Activity%203.1.2.png)
+
+## Module 4 SIEM, Automation and Continuous Monitoring
+
+This section is conceptual. The objective is to connect host-level evidence to enterprise monitoring and governance.
+
+### SIEM Capabilities
+
+- Log collection and aggregation from multiple systems.
+- Normalization and parsing of different log formats.
+- Correlation and analysis of related events.
+- Alerting and notification based on rules or analytics.
+- Dashboards and reporting for security operations, management and compliance.
+
+Modern monitoring ecosystems may also include UEBA, SOAR, cloud integrations, EDR, network traffic analysis, vulnerability scanners and threat-intelligence platforms.
+
+### Automation in Monitoring and Auditing
+
+- Continuous Control Monitoring: automated or near-real-time verification that selected controls remain effective.
+- Automated Alerting: notification when security events or control thresholds are breached.
+- Trend Analysis: systematic identification of changes over time.
+- Automated Reporting: recurring generation of control/compliance reports.
+- Automated Control Testing: scripts or integrations that test configurations or evidence conditions.
+- Workflow Automation: assignment, tracking, escalation and follow-up of findings or remediation actions.
+
+### Governance Discussion
+
+In this laboratory, not all evidence sources were operational. `auditd` could not run successfully, `/var/log/audit/audit.log` was not generated, `ausearch` and `aureport` could not retrieve audit records, `journalctl` returned no journal files, and the expected authentication and syslog files were unavailable.
+
+However, evidence collected from `auditd`, `journalctl`, authentication logs and Lynis can be integrated into an enterprise monitoring environment to provide centralized security visibility and support continuous control assurance. In a production environment, audit and log data may be forwarded to a SIEM through log collectors, endpoint agents, syslog forwarding or other approved integrations. The SIEM can then normalize the different log formats, correlate related events, generate alerts when defined thresholds are exceeded, and present dashboards and reports for security operations, management and compliance purposes.
+
+`auditd` can provide detailed records of security-relevant operating-system activities, such as privileged command execution, access or changes to sensitive files, and other events covered by configured audit rules. These records can be forwarded to a SIEM and correlated with identity, endpoint and network events to support investigation and accountability. `journalctl` can provide operating-system, service, kernel and application events where these are recorded by the systemd journal. Centralizing this information would help security teams detect service failures, unexpected system behaviour and other conditions requiring investigation.
+
+Authentication logs can provide evidence of successful and failed login attempts, sudo activity and other account-related events. A single failed login may remain a routine technical event, while repeated failures against the same account or across multiple systems could trigger an automated alert based on defined thresholds. Persistent authentication anomalies, particularly when combined with other indicators, may require escalation beyond normal operational monitoring.
+
+Lynis successfully produced usable assessment evidence, including the hardening index, warnings and security-hardening suggestions. These findings could be incorporated into vulnerability-management, compliance or GRC dashboards for remediation tracking and governance reporting.
+
+The failure or unavailability of the logging mechanisms is itself a control-assurance finding. It demonstrates that required monitoring evidence could not be generated or reviewed, rather than proving that no security-relevant events occurred.
+
+---
+
+# 9. Applied Governance Task From Linux Evidence to Control Assurance
+
+## Control-Monitoring Table
+
+| Control / Objective | Evidence | Owner | Observed Status | KPI/KRI or Threshold | Risk / Significance | Remediation | Retest / Follow-up |
+|---------------------|----------|--------|-----------------|---------------------|---------------------|-------------|-------------------|
+| Audit logging – ensure security-relevant activity is recorded and traceable | auditd was installed, but it could not run in the assigned environment. /var/log/audit/audit.log was not generated, auditctl -l could not verify loaded rules, and ausearch/aureport could not retrieve records. | Linux/System Administrator with Security Operations oversight | Ineffective / Not operational | Audit service operational; approved audit rules loaded; audit log present; 100% of required audit sources generating records | High. Privileged actions, sensitive-file access and other security events cannot be reliably evidenced or investigated. | Restore audit logging on a supported host or environment, enable auditd, validate required rules and ensure audit logs are retained. | Re-run service checks, auditctl -l, generate a benign event, confirm ausearch returns the configured key and verify aureport generates summaries. |
+| System and authentication logging – maintain evidence for login, sudo and system events | journalctl returned no journal files. /var/log/auth.log and /var/log/syslog were absent. Alternative /var/log review mainly returned package-management entries. | Linux/System Administrator / Security Operations | Ineffective / Evidence unavailable | Required log sources available and current; no unexplained logging gaps; authentication and privilege events retrievable | High. Failed logins, sudo activity and system errors may not be detected or reconstructed during investigation. | Configure or restore journald/syslog and authentication logging, verify retention and central forwarding where applicable. | Generate approved authentication and sudo events, then confirm they appear in the configured log source with user, timestamp and action details. |
+| Patch and vulnerability management – reduce exposure to known vulnerabilities | apt reported 91 upgradable packages and Lynis warning PKGS-7392 identified one or more vulnerable packages. | Linux/System Administrator / Vulnerability Management Team | Needs remediation | No critical/high-risk vulnerable packages beyond approved SLA; patch backlog within defined threshold | High. Known vulnerabilities may remain exploitable if patches are not reviewed and applied promptly. | Review outstanding packages, prioritize security updates, test where required and apply approved patches. | Re-run apt list --upgradable and Lynis. Confirm vulnerable-package warning is resolved or formally risk-accepted. |
+| Kernel and security logging – ensure kernel events are captured | Lynis warning LOGG-2138 reported that klogd was not running and kernel messages could therefore be missing from log files. | Linux/System Administrator | Weak / Not operating as expected | Kernel logging available with no unexplained service outage; critical kernel events retained | Moderate to High. Missing kernel events can reduce detection and forensic visibility. | Enable an appropriate supported kernel/system logging mechanism and validate that kernel events are captured. | Generate or observe a benign kernel/system event and confirm it appears in the approved logging source. Re-run Lynis. |
+| System hardening – maintain secure baseline configuration | Lynis hardening index was 62/100 from 232 tests, with 3 warnings and 43 suggestions. Findings included missing malware scanner, missing file-integrity monitoring and several sysctl values differing from the recommended profile. | Linux/System Administrator with Security Engineering oversight | Partially effective | Hardening baseline met; no unresolved critical findings; agreed hardening target achieved | Moderate. Configuration weaknesses can increase exposure and reduce defence-in-depth. | Review Lynis findings, prioritize applicable recommendations and implement approved hardening changes based on system role and risk. | Re-run Lynis after remediation and compare warnings, suggestions and hardening index against the baseline. |
+| DNS resilience – maintain sufficient name-resolution availability | Lynis warning NETW-2705 reported that two responsive nameservers could not be identified. | Network Administrator / Linux Administrator | Needs improvement | At least two responsive approved DNS resolvers where required by architecture | Moderate. DNS failure may affect system availability and dependency resolution. | Configure and validate appropriate redundant DNS resolvers in line with the approved network design. | Test resolver availability and repeat the Lynis check to confirm the warning is cleared. |
+
+## Governance Escalation Questions
+
+### 1. Which finding is the highest priority and why?
+
+The highest-priority finding is the absence of reliable audit and logging evidence. Auditd could not operate, the audit log was not generated, journalctl contained no usable records, and the expected authentication and syslog files were absent. This creates a significant control-assurance gap because security-relevant actions cannot be reliably traced to a user, action and time.
+
+This finding is more urgent than an individual hardening weakness because, without functioning audit and logging controls, management cannot adequately monitor other controls or investigate whether suspicious activity has occurred.
+
+### 2. Who should own remediation for each major finding?
+
+The Linux/System Administrator should own restoration of auditd, system logging, kernel logging, patching and most host-hardening actions. Security Operations or Security Engineering should provide oversight for audit coverage, event-monitoring requirements and validation of security controls. Vulnerability Management should support prioritization and tracking of vulnerable packages, while the Network Administrator should own DNS resilience where the configuration is centrally managed.
+
+### 3. What threshold or condition should trigger escalation to the CISO, Risk function or management committee?
+
+Escalation should occur when a finding indicates a significant or persistent control failure. Examples include audit or authentication logging remaining unavailable beyond the approved remediation period, a critical or high-risk vulnerability exceeding its patch SLA, repeated failure of the same control during retesting, widespread recurrence across multiple systems, or evidence that the weakness has contributed to a security incident.
+
+Immediate escalation should also occur where the lack of logging prevents investigation of suspected privileged misuse, unauthorised access or another potentially material security event.
+
+### 4. What evidence would demonstrate successful remediation?
+
+Successful remediation of the audit-logging issue would be demonstrated by evidence that the audit service is operational, approved rules are loaded, `/var/log/audit/audit.log` or the authorised equivalent is populated, and `ausearch` and `aureport` return valid records.
+
+For system and authentication logging, successful remediation would require current journal, authentication or equivalent log entries showing user, service, action and timestamp information. Patch-management remediation would be evidenced by a reduced or cleared package backlog and removal of the relevant Lynis vulnerability warning. Hardening remediation would be demonstrated through configuration checks and an improved Lynis re-scan.
+
+### 5. When and how should the control be retested?
+
+High-priority controls such as audit logging, authentication logging and vulnerable-package remediation should be retested immediately after corrective action is completed. The retest should repeat the same commands or equivalent approved checks used during the initial assessment so that before-and-after evidence can be compared.
+
+For auditd, the retest should verify service operation, confirm loaded rules, generate a benign event and use ausearch and aureport to confirm that the activity was recorded. For logging controls, approved test events should be generated and confirmed in the relevant journal or log source. For patching and hardening, package checks and a new Lynis assessment should be performed. After initial closure, these controls should continue to be reviewed periodically through continuous monitoring or scheduled assurance testing.
