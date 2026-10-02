@@ -81,14 +81,14 @@ The following audit rules were configured:
 ```
 
 ### Purpose of the Rules
-
+```
 - `-w` specifies the file or directory to watch.
 - `-p rwxa` monitors all relevant operations:
   - `r` = read
   - `w` = write
   - `x` = execute
   - `a` = attribute changes
-
+```
 ![Activity 1.2.2](./Activity%201.2.2.png)
 
 ### 1.2.3 Add Program-Execution Monitoring Rules
